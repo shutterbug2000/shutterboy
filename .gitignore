@@ -1,0 +1,5 @@
+roms/
+.c4droid
+*.o
+*.exe
+*.out
