@@ -633,8 +633,10 @@ void runOpcode(){
 		}
 
 		case 0x8:{
+
 			writeByte(readWord(PC+1)+1,SP>>8);
-			writeByte(readWord(PC+1),SP && 0xff);
+			writeByte(readWord(PC+1),SP & 0xff);
+			//printf("ccccee: %x %x\n",SP,readWord(readWord(PC+1)));
 			PC+=3;
 			break;
 		}
@@ -807,6 +809,7 @@ void runOpcode(){
 			////printf("%x\n",readByte(PC+1));
 			load16(&HL,readWord(PC+1));
 			//printf("%x\n",HL);
+            //if(PC==0xC626) {printf("%x %x\n",HL, PC); pause=1; system("pause");}
 			//exit(0);
 			PC+=3;
 			break;
@@ -864,8 +867,9 @@ void runOpcode(){
 		}
 
 		case 0x2A:{
-			////printf("%x\n",H);
-			////printf("%x\n",L);
+			//printf("%x\n",H);
+            //printf("%x\n",L);
+            //if(PC==0xC631) {printf("%x %x\n",HL, PC); system("pause");}
 			load8(&A,readByte(HL));
 			inc16(&HL);
 			////printf("%x",A);
@@ -973,6 +977,12 @@ void runOpcode(){
 			break;
 		}
 
+		case 0x39:{
+			add16(&HL,SP);
+			PC++;
+			break;
+		}
+
 		case 0x3A:{
 			////printf("%x\n",H);
 			////printf("%x\n",L);
@@ -980,6 +990,12 @@ void runOpcode(){
 			dec16(&HL);
 			////printf("%x",A);
 			//exit(0);
+			PC++;
+			break;
+		}
+
+		case 0x3B:{
+			dec16(&SP);
 			PC++;
 			break;
 		}
@@ -2353,6 +2369,7 @@ void runOpcode(){
 
 		case 0xE1:{
 			HL = popStack16();
+            //if(PC==0xC660) {printf("bbbb: %x %x\n",HL, PC); system("pause");}
 			PC+=1;
 			break;
 		}
@@ -2365,6 +2382,24 @@ void runOpcode(){
 
 		case 0xE6:{
 			and(&A,readByte(PC+1));
+			PC+=2;
+			break;
+		}
+
+		case 0xE8:{
+			add16(&SP,readByte(PC+1));
+			flagclear(ZFLAG);
+			if((unsigned short)(sp.lo+readByte(PC+1)) > 0xFF){
+                flagset(CFLAG);
+            }else{
+                flagclear(CFLAG);
+            }
+
+            if(((sp.lo & 0xf)+(readByte(PC+1) & 0xf)) > 0xF){
+                flagset(HFLAG);
+            }else{
+                flagclear(HFLAG);
+            }
 			PC+=2;
 			break;
 		}
@@ -2419,6 +2454,7 @@ void runOpcode(){
 		}
 
 		case 0xF9:{
+		    //if(PC==0xC65F) {printf("aaaa: %x %x\n",readWord(HL), PC); system("pause");}
 			load16(&SP,HL);
 			//printf("%x\n",PC-1);
 			//system("pause");

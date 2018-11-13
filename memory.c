@@ -46,7 +46,7 @@ unsigned char readByte(unsigned short position){
 			break;
 		} */
 		default:{
-			printf("Unknown read region: %x",position);
+			printf("Unknown read region: %x\nCurrent PC: %x",position, PC);
 			exit(0);
 			return 0xFF;
 		}

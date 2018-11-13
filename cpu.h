@@ -1,6 +1,6 @@
 //shutterboy2000 CPU - header
 
-union Register 
+union Register
 {
 	unsigned short reg;
 	struct
