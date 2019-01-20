@@ -266,6 +266,12 @@ void add(unsigned char *reg, unsigned char value){
 
 }
 
+
+
+void addSp(signed char value){
+
+}
+
 void adc8(unsigned char *reg, unsigned char value){
     char cVal = flagget(CFLAG);
 
@@ -951,7 +957,7 @@ void runOpcode(){
 		}
 
 		case 0x36:{
-		    printf("%x",HL);
+		    //printf("%x",HL);
 			writeByte(HL,readByte(PC+1)); //This might be wrong.
 			PC+=2;
 			break;
@@ -2387,19 +2393,23 @@ void runOpcode(){
 		}
 
 		case 0xE8:{
-			add16(&SP,readByte(PC+1));
-			flagclear(ZFLAG);
-			if((unsigned short)(sp.lo+readByte(PC+1)) > 0xFF){
-                flagset(CFLAG);
-            }else{
-                flagclear(CFLAG);
-            }
+			unsigned short tmp = SP;
+			signed char value = (signed char)(readByte(PC+1));
+			
+			if((unsigned short)(sp.lo+(unsigned char)value) > 0xFF){
+				flagset(CFLAG);
+			}else{
+				flagclear(CFLAG);
+			}
 
-            if(((sp.lo & 0xf)+(readByte(PC+1) & 0xf)) > 0xF){
-                flagset(HFLAG);
-            }else{
-                flagclear(HFLAG);
-            }
+			if(((sp.lo & 0xf)+((unsigned char)value & 0xf)) > 0xF){
+				flagset(HFLAG);
+			}else{
+				flagclear(HFLAG);
+			}
+
+			SP = (SP + value);
+			flagclear(ZFLAG | NFLAG);
 			PC+=2;
 			break;
 		}
@@ -2450,6 +2460,31 @@ void runOpcode(){
 		case 0xF3:{
 			interrupts = 0;
 			PC++;
+			break;
+		}
+
+		case 0xF8:{
+		    //if(PC==0xC65F) {printf("aaaa: %x %x\n",readWord(HL), PC); system("pause");}
+			HL = SP;
+			signed char value = (signed char)(readByte(PC+1));
+			
+			if((unsigned short)(hl.lo+(unsigned char)value) > 0xFF){
+				flagset(CFLAG);
+			}else{
+				flagclear(CFLAG);
+			}
+
+			if(((hl.lo & 0xf)+((unsigned char)value & 0xf)) > 0xF){
+				flagset(HFLAG);
+			}else{
+				flagclear(HFLAG);
+			}
+
+			HL = (SP + value);
+			flagclear(ZFLAG | NFLAG);
+			//printf("%x\n",PC-1);
+			//system("pause");
+			PC+=2;
 			break;
 		}
 

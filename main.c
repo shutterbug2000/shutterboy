@@ -7,8 +7,8 @@ int main(){
 	initCpu();
 
 	//F = 0;
-	//openRom("/home/pi/shutterboy/roms/test/cpu_instrs/individual/06-ld r,r.gb");
-	openRom("c:/Users/jstok/Documents/shutterboy/shutterboy/roms/test/cpu_instrs/individual/03-op sp,hl.gb");
+	openRom("/home/chrx/shutterboy/roms/test/cpu_instrs/individual/04-op r,imm.gb");
+	//openRom("c:/Users/jstok/Documents/shutterboy/shutterboy/roms/test/cpu_instrs/individual/03-op sp,hl.gb");
 
 	while(1){
 		//printf("%x\n",PC);
